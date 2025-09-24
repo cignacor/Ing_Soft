@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title> login </title>
+    <link rel="stylesheet" href="../archivos_css/login.css">
+
+</head>
+<body>
+
+
+   <h1>RESERVA DE ESPACIOS</h1>
+
+    <div class="Contenedor_login">
+    <img src="../imagenes/Logo_pascual.png" alt="Logo de la universidad" width="120">
+    <h2> Iniciar Sesión </h2>
+    
+    <form id="loginForm">
+
+    <label for="tipo_de_persona">Yo soy: </label>
+<select id="tipo_persona" name="tipo_persona" required>
+  <option value="">-- Selecciona una opción --</option>
+  <option value="estudiante">Estudiante</option>
+  <option value="profesor">Profesor</option>
+  <option value="administrador">Administrativo</option>
+</select>
+
+        <label for="email">Correo electrónico</label>
+        <input type="email" id="email" name="email" required>
+
+        <label for="password"> Contraseña </label>
+        <input type="password" id="password" name="password" required>
+
+
+           <button type="submit">Iniciar Sesión</button>
+
+
+    </form>
+</div>
+      <script src="../archivos_js/login.js"></script>
+</body>
+</html>

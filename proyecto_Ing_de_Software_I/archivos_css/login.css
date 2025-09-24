@@ -1,0 +1,129 @@
+/* ======== Reset de estilos ======== */
+body {
+    font-family: Arial, sans-serif;
+    background-image: url('../imagenes/FotoPascual.jpg'); /* Ruta de la imagen */
+    background-size: cover;       /* Ajusta la imagen para cubrir toda la pantalla */
+    background-position: center;  /* Centra la imagen */
+    background-repeat: no-repeat; /* Evita que se repita */
+
+    margin: 0;
+    padding: 0;
+
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+}
+
+/* ======== Título principal ======== */
+h1 {
+    text-align: center;             /* Centra el texto */
+    margin-bottom: 20px;            /* Espacio debajo del título */
+    font-size: 40px;                /* Tamaño de letra */
+    font-weight: bold;              /* Texto en negrita */
+    color: #001f4d;                 /* Azul oscuro */
+    font-family: 'Trebuchet MS', 'Lucida Sans Unicode', 'Lucida Grande', 'Lucida Sans', Arial, sans-serif;
+    letter-spacing: 7px;            /* Espaciado entre letras */
+
+    /* Borde blanco con sombra */
+    text-shadow: 
+        -1px -1px 0 #fff,
+         1px -1px 0 #fff,
+        -1px  1px 0 #fff,
+         1px  1px 0 #fff;
+}
+
+
+/* ======== Contenedor del login ======== */
+.Contenedor_login {
+    background-color: #ffffff;      /* Fondo blanco */
+    padding: 30px;                  /* Espaciado interno */
+    border-radius: 10px;            /* Bordes redondeados */
+    box-shadow: 0px 4px 10px rgba(0,0,0,0.1); /* Sombra ligera */
+    width: 90%;                     /* 🔹 Ocupa el 90% del ancho de la pantalla (responsive) */
+    max-width: 350px;               /* 🔹 Máximo 350px en pantallas grandes */
+    text-align: center;             /* Centra el contenido dentro */
+}
+
+/* ======== Etiquetas de formulario ======== */
+.Contenedor_login label {
+    display: block;                 /* Hace que el label esté encima del input */
+    margin-bottom: 0px;             /* Quita espacio extra */
+    font-size: 14px;                /* Tamaño de letra */
+    font-weight: bold;              /* Texto en negrita */
+    color: #333;                    /* Gris oscuro */
+}
+
+/* ======== Imagen del logo ======== */
+.Contenedor_login img {
+    width: 100%;                    /* Se ajusta al ancho del contenedor */
+    max-width: 250px;               /* 🔹 Nunca será más grande de 250px */
+    height: auto;                   /* Mantiene proporciones */
+    margin-bottom: 15px;            /* Espacio debajo del logo */
+}
+
+/* ======== Subtítulo (Iniciar sesión) ======== */
+.Contenedor_login h2 {
+    margin-bottom: 20px;            /* Espacio debajo del subtítulo */
+    font-size: 22px;                /* Tamaño del texto */
+    font-weight: bold;              /* Texto en negrita */
+    color: #333;                    /* Gris oscuro */
+}
+
+/* ======== Formulario ======== */
+.Contenedor_login form {
+    display: flex;                  /* Activa Flexbox */
+    flex-direction: column;         /* Elementos en columna */
+    gap: 15px;                      /* Espacio entre inputs y labels */
+    text-align: left;               /* Alinea los labels a la izquierda */
+}
+
+/* ======== Inputs y Select ======== */
+.Contenedor_login input,
+.Contenedor_login select {
+    padding: 10px;                  /* Espaciado interno */
+    border: 1px solid #ccc;         /* Borde gris claro */
+    border-radius: 5px;             /* Bordes redondeados */
+    font-size: 14px;                /* Tamaño de letra */
+    width: 100%;                    /* Ocupa todo el ancho disponible */
+    box-sizing: border-box;         /* Incluye padding en el cálculo del ancho */
+}
+
+/* ======== Botón ======== */
+.Contenedor_login button {
+    background-color: #03284d;      /* Azul oscuro */
+    color: white;                   /* Texto en blanco */
+    padding: 12px;                  /* Espaciado interno */
+    border: none;                   /* Sin borde */
+    border-radius: 5px;             /* Bordes redondeados */
+    cursor: pointer;                /* Cursor tipo "mano" */
+    font-size: 15px;                /* Tamaño del texto */
+    transition: background 0.3s ease; /* Animación al pasar el mouse */
+}
+
+/* Efecto hover (cuando pasas el mouse encima del botón) */
+.Contenedor_login button:hover {
+    background-color: #4d9ab1;      /* Azul más claro */
+}
+
+/* ======== MEDIA QUERIES (Responsive) ======== */
+@media (max-width: 600px) {         /* 🔹 Cuando la pantalla es menor a 600px (celulares) */
+    h1 {
+        font-size: 28px;            /* Reduce el tamaño del título */
+        letter-spacing: 3px;        /* Menos espacio entre letras */
+    }
+
+    .Contenedor_login {
+        padding: 20px;              /* Menos espacio interno para que quepa mejor */
+    }
+
+    .Contenedor_login h2 {
+        font-size: 18px;            /* Subtítulo más pequeño */
+    }
+
+    .Contenedor_login button {
+        font-size: 14px;            /* Texto más pequeño en el botón */
+        padding: 10px;              /* Menos espacio interno */
+    }
+}

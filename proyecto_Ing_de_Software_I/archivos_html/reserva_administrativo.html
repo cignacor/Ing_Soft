@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <div class="logo">Panel Administrativo</div>
+  <link rel="stylesheet" href="../archivos_css/reserva_administrativo.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+  <header>
+    <div class="logo">KKJS-admin</div>
+    <nav>
+      <ul>
+        <li><a href="#espacios"><i class="fas fa-layer-group"></i> Espacios</a></li>
+        <li><a href="#reservas"><i class="fas fa-calendar-check"></i> Reservas</a></li>
+        <li><a href="#configuracion"><i class="fas fa-chart-bar"></i> Estadísticas</a></li>
+        <li><a href="login.html"><i class="fas fa-sign-out-alt"></i> Salir</a></li>
+      </ul>
+    </nav>
+  </header>
+
+  <main>
+    <section id="panel-admin">
+      <h1>Panel Administrativo</h1>
+
+      <div class="acciones">
+        <button id="btn-agregar"><i class="fas fa-plus"></i> Agregar Espacio</button>
+        <button id="btn-ver-reservas"><i class="fas fa-calendar-alt"></i> Ver Reservas</button>
+        <button id="btn-configuracion"><i class="fas fa-chart-bar"></i> Estadísticas</button>
+      </div>
+
+      <div id="formulario-espacio" class="oculto">
+        <h2>Agregar / Editar Espacio</h2>
+        <form id="espacioForm">
+          <input type="text" name="nombre" placeholder="Nombre del espacio" required>
+          <select name="departamento" required>
+            <option value="">Departamento</option>
+            <option value="diseno">Diseño</option>
+            <option value="electrica">Eléctrica</option>
+            <option value="mecanica">Mecánica</option>
+            <option value="produccion">Producción</option>
+            <option value="sistemas-digitales">Sistemas Digitales</option>
+            <option value="deportivos">Deportivos</option>
+          </select>
+          <select name="tipo" required>
+            <option value="">Tipo de espacio</option>
+            <option value="aula">Aula</option>
+            <option value="laboratorio">Laboratorio</option>
+            <option value="comun">Espacio Común</option>
+          </select>
+          <input type="number" name="capacidad" placeholder="Capacidad" required>
+          <textarea name="descripcion" placeholder="Descripción del espacio"></textarea>
+          <button type="submit">Guardar</button>
+          <button type="button" id="cancelar">Cancelar</button>
+        </form>
+      </div>
+
+      <div id="seccion-espacios">
+        <h2>Gestión de Espacios</h2>
+        <div id="filtros-espacios">
+          <label for="filtro-departamento">Departamento:</label>
+          <select id="filtro-departamento">
+            <option value="">Todos los departamentos</option>
+            <option value="diseno">Diseño</option>
+            <option value="electrica">Eléctrica</option>
+            <option value="mecanica">Mecánica</option>
+            <option value="produccion">Producción</option>
+            <option value="sistemas-digitales">Sistemas Digitales</option>
+            <option value="deportivos">Deportivos</option>
+          </select>
+          <label for="filtro-tipo">Tipo:</label>
+          <select id="filtro-tipo">
+            <option value="">Todos los tipos</option>
+            <option value="aula">Aula</option>
+            <option value="laboratorio">Laboratorio</option>
+            <option value="comun">Espacio Común</option>
+          </select>
+          <button id="btn-aplicar-filtros">Aplicar Filtros</button>
+        </div>
+        <div id="lista-espacios">
+          <!-- Aquí se cargarán los espacios dinámicamente -->
+        </div>
+
+        <div id="formulario-editar-espacio" class="oculto">
+          <h2>Editar Espacio</h2>
+          <form id="editarEspacioForm">
+            <input type="hidden" name="id" id="editar-id">
+            <input type="text" name="nombre" id="editar-nombre" placeholder="Nombre del espacio" required>
+            <select name="departamento" id="editar-departamento" required>
+              <option value="">Seleccionar departamento</option>
+              <option value="diseno">Diseño</option>
+              <option value="electrica">Eléctrica</option>
+              <option value="mecanica">Mecánica</option>
+              <option value="produccion">Producción</option>
+              <option value="sistemas-digitales">Sistemas Digitales</option>
+              <option value="deportivos">Deportivos</option>
+            </select>
+            <select name="tipo" id="editar-tipo" required>
+              <option value="">Seleccionar tipo</option>
+              <option value="aula">Aula</option>
+              <option value="laboratorio">Laboratorio</option>
+              <option value="comun">Espacio Común</option>
+            </select>
+            <input type="number" name="capacidad" id="editar-capacidad" placeholder="Capacidad" required>
+            <textarea name="descripcion" id="editar-descripcion" placeholder="Descripción del espacio"></textarea>
+            <button type="submit">Guardar Cambios</button>
+            <button type="button" id="cancelar-editar">Cancelar</button>
+          </form>
+        </div>
+      </div>
+
+      <div id="seccion-reservas" class="oculto" style="margin-top: 50px;">
+        <h2>Reservas Registradas</h2>
+        <div id="lista-reservas">
+          <!-- Aquí se mostrarán las reservas -->
+        </div>
+        <div style="margin-bottom: 100px;"></div>
+        <hr style="margin: 20px 0; border: 1px solid #ddd;">
+        <div style="margin-bottom: 50px;"></div>
+      </div>
+
+      <div id="seccion-configuracion" class="oculto" style="margin-top: 50px;">
+        <h2>Estadísticas del Sistema</h2>
+        <p>Aquí podrás ver las estadísticas de uso del sistema, como total de departamentos, espacios y reservas activas.</p>
+        <div style="text-align: center; margin: 20px 0;">
+          <img src="../imagenes/tablaficticia.jpg" alt="Estadísticas Ficticias" style="max-width: 100%; height: auto; border: 1px solid #ddd; border-radius: 8px;">
+        </div>
+        <div style="margin-bottom: 100px;"></div>
+      </div>
+    </section>
+  </main>
+
+  <footer>
+    <p>© 2025 KKJS - Todos los derechos reservados</p>
+  </footer>
+
+  <script src="../archivos_js/reservas.js"></script>
+</body>
+</html>
