@@ -123,12 +123,12 @@ class DatabaseMySQL {
 
             // Insertar reservas de ejemplo
             $reservas = [
-                [1, 1, 'diseno', '2024-12-01', 'manana', 'activa'],
-                [2, 2, 'electrica', '2024-12-02', 'tarde', 'activa'],
-                [3, 3, 'mecanica', '2024-12-03', 'manana', 'activa'],
-                [4, 4, 'produccion', '2024-12-04', 'tarde', 'activa'],
-                [5, 5, 'sistemas-digitales', '2024-12-05', 'manana', 'activa'],
-                [6, 6, 'deportivos', '2024-12-06', 'tarde', 'activa']
+                [1, 1, 'diseno', '2024-12-01', '08:00-10:00', 'activa'],
+                [5, 2, 'electrica', '2024-12-02', '14:00-16:00', 'activa'],
+                [9, 3, 'mecanica', '2024-12-03', '10:00-12:00', 'activa'],
+                [13, 4, 'produccion', '2024-12-04', '16:00-18:00', 'activa'],
+                [17, 5, 'sistemas-digitales', '2024-12-05', '08:00-10:00', 'activa'],
+                [21, 6, 'deportivos', '2024-12-06', '14:00-16:00', 'activa']
             ];
 
             $stmt = $this->db->prepare("INSERT INTO reservas (espacio_id, usuario_id, departamento_codigo, fecha, horario, estado) VALUES (?, ?, ?, ?, ?, ?)");
@@ -142,12 +142,12 @@ class DatabaseMySQL {
             if ($countReservas == 0) {
                 // Insertar reservas de ejemplo
                 $reservas = [
-                    [1, 1, 'diseno', '2024-12-01', 'manana', 'activa'],
-                    [2, 2, 'electrica', '2024-12-02', 'tarde', 'activa'],
-                    [3, 3, 'mecanica', '2024-12-03', 'manana', 'activa'],
-                    [4, 4, 'produccion', '2024-12-04', 'tarde', 'activa'],
-                    [5, 5, 'sistemas-digitales', '2024-12-05', 'manana', 'activa'],
-                    [6, 6, 'deportivos', '2024-12-06', 'tarde', 'activa']
+                    [1, 1, 'diseno', '2024-12-01', '08:00-10:00', 'activa'],
+                    [2, 2, 'electrica', '2024-12-02', '14:00-16:00', 'activa'],
+                    [3, 3, 'mecanica', '2024-12-03', '10:00-12:00', 'activa'],
+                    [4, 4, 'produccion', '2024-12-04', '16:00-18:00', 'activa'],
+                    [5, 5, 'sistemas-digitales', '2024-12-05', '08:00-10:00', 'activa'],
+                    [6, 6, 'deportivos', '2024-12-06', '14:00-16:00', 'activa']
                 ];
 
                 $stmt = $this->db->prepare("INSERT INTO reservas (espacio_id, usuario_id, departamento_codigo, fecha, horario, estado) VALUES (?, ?, ?, ?, ?, ?)");
@@ -260,7 +260,7 @@ class DatabaseMySQL {
 
     public function getReservas($usuarioId = null) {
     $sql = "
-        SELECT r.*, e.nombre as espacio, u.nombre as usuario, d.nombre as departamento
+        SELECT r.*, e.nombre as espacio_nombre, e.capacidad, d.nombre as departamento_nombre, u.nombre as usuario
         FROM reservas r
         JOIN espacios e ON r.espacio_id = e.id
         JOIN departamentos d ON r.departamento_codigo = d.codigo

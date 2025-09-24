@@ -30,6 +30,10 @@
                         <li><a href="#mis-reservas" class="nav-link">Mis Reservas</a></li>
                         <li><a href="#espacios" class="nav-link">Espacios</a></li>
                         <li><a href="#contacto" class="nav-link">Contacto</a></li>
+                        <li><button class="btn btn-logout" id="logoutBtn">
+                            <i class="fas fa-sign-out-alt"></i>
+                            <span>Salir</span>
+                        </button></li>
                     </ul>
                     <button class="mobile-menu-toggle" id="mobileMenuToggle">
                         <i class="fas fa-bars"></i>
@@ -324,7 +328,7 @@
             </div>
             <h3>¡Reserva Exitosa!</h3>
             <p>Tu reserva ha sido confirmada. Revisa tu correo para más detalles.</p>
-            <button class="btn btn-primary" onclick="closeModal('successModal')">Aceptar</button>
+            <button class="btn btn-primary" onclick="sicau.closeModal('successModal')">Aceptar</button>
         </div>
     </div>
 
@@ -335,8 +339,8 @@
                 <i class="fas fa-exclamation-triangle"></i>
             </div>
             <h3>Error</h3>
-            <p id="errorMessage">Ha ocurrido un error inesperado.</p>
-            <button class="btn btn-secondary" onclick="closeModal('errorModal')">Cerrar</button>
+            <p id="errorMessage">Error desconocido.</p>
+            <button class="btn btn-secondary" onclick="sicau.closeModal('errorModal')">Cerrar</button>
         </div>
     </div>
 

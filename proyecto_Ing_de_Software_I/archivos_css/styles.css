@@ -683,6 +683,19 @@ body {
     box-shadow: var(--shadow-md);
 }
 
+.btn-logout {
+    background: var(--rojo-coral);
+    color: var(--blanco);
+    border: 2px solid var(--rojo-coral);
+}
+
+.btn-logout:hover {
+    background: #c0392b;
+    border-color: #c0392b;
+    transform: translateY(-2px);
+    box-shadow: var(--shadow-md);
+}
+
 /* Mis Reservas Section */
 .mis-reservas-section {
     padding: 4rem 0;

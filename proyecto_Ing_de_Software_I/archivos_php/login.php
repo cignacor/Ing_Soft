@@ -1,4 +1,5 @@
 <?php
+session_start();
 require_once 'database_mysql.php';
 
 header('Content-Type: application/json');
@@ -24,6 +25,14 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $user = $stmt->fetch(PDO::FETCH_ASSOC);
 
         if ($user) {
+            // Iniciar sesión y guardar datos del usuario
+            $_SESSION['user_id'] = $user['id'];
+            $_SESSION['user_name'] = $user['nombre'];
+            $_SESSION['user_email'] = $user['email'];
+            $_SESSION['user_type'] = $user['tipo'];
+            $_SESSION['user_department'] = $user['departamento'];
+            $_SESSION['logged_in'] = true;
+
             // Determinar URL de redirección
             $redirectUrl = '../archivos_html/index.html';
             if ($tipo === 'administrador') {

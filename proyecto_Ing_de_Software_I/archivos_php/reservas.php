@@ -85,9 +85,6 @@ function handleGet($action, $db)
         case 'historial_reservas':
             getHistorialReservas($db);
             break;
-        case 'editar':
-            editarReserva($db);
-            break;
 
         default:
             throw new Exception('Acción no válida', 400);
@@ -102,6 +99,9 @@ function handlePost($action, $db)
     switch ($action) {
         case 'reservar':
             crearReserva($db);
+            break;
+        case 'editar':
+            editarReserva($db);
             break;
         case 'agregar_espacio':
             agregarEspacio($db);
@@ -131,24 +131,45 @@ function handlePut($action, $db)
 function editarReserva($db) {
     $data = json_decode(file_get_contents("php://input"), true);
 
+    if (!$data) {
+        throw new Exception('Datos JSON inválidos', 400);
+    }
+
+    // Validar campos requeridos
+    $required = ['id', 'espacio_id', 'departamento_codigo', 'fecha', 'horario'];
+    foreach ($required as $field) {
+        if (!isset($data[$field]) || empty($data[$field])) {
+            throw new Exception("Campo requerido faltante: $field", 400);
+        }
+    }
+
     $id = $data['id'];
     $departamento = $data['departamento_codigo'];
     $espacio = $data['espacio_id'];
     $fecha = $data['fecha'];
     $horario = $data['horario'];
 
-    $sql = "UPDATE reservas 
-            SET departamento_codigo = ?, espacio_id = ?, fecha = ?, horario = ?, 
-                fecha_edicion = NOW(), updated_at = NOW()
+    // Validar formato de fecha
+    if (!preg_match('/^\d{4}-\d{2}-\d{2}$/', $fecha)) {
+        throw new Exception('Formato de fecha inválido (YYYY-MM-DD)', 400);
+    }
+
+    $sql = "UPDATE reservas
+            SET departamento_codigo = ?, espacio_id = ?, fecha = ?, horario = ?,
+                updated_at = NOW()
             WHERE id = ? AND estado = 'activa'";
 
-    $stmt = $db->prepare($sql);
+    $stmt = $db->getConnection()->prepare($sql);
     $success = $stmt->execute([$departamento, $espacio, $fecha, $horario, $id]);
 
-    echo json_encode([
-        'success' => $success,
-        'message' => $success ? 'Reserva actualizada correctamente' : 'No se pudo actualizar la reserva'
-    ]);
+    if ($success && $stmt->rowCount() > 0) {
+        echo json_encode([
+            'success' => true,
+            'message' => 'Reserva actualizada correctamente'
+        ]);
+    } else {
+        throw new Exception('No se pudo actualizar la reserva o la reserva no existe', 400);
+    }
 }
 /**
  * Manejar peticiones DELETE
@@ -239,7 +260,8 @@ function checkDisponibilidad($db)
 
     echo json_encode([
         'success' => true,
-        'disponible' => $disponible
+        'disponible' => $disponible,
+        'mensaje' => $disponible ? 'Disponible' : 'Ocupado'
     ]);
 }
 
@@ -281,10 +303,7 @@ function crearReserva($db)
         throw new Exception('Formato de fecha inválido (YYYY-MM-DD)', 400);
     }
 
-    // Validar horario
-    if (!in_array($input['horario'], ['manana', 'tarde'])) {
-        throw new Exception('Horario inválido (debe ser manana o tarde)', 400);
-    }
+
 
     // Validar fecha futura
     $fechaReserva = new DateTime($input['fecha']);

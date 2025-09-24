@@ -79,6 +79,9 @@ class SICAUReservationSystem {
         // Mobile menu
         document.getElementById('mobileMenuToggle')?.addEventListener('click', this.toggleMobileMenu);
 
+        // Logout button
+        document.getElementById('logoutBtn')?.addEventListener('click', () => this.logout());
+
         // Modales
         document.querySelectorAll('.modal .btn').forEach(btn => {
             btn.addEventListener('click', (e) => {
@@ -281,27 +284,6 @@ class SICAUReservationSystem {
             return;
         }
 
-        // Validar bloques de 2 horas pares (4-6, 8-10, 10-12, 14-16, 16-18, etc.)
-        const horaInicioNum = parseInt(horaInicio.split(':')[0]);
-        const horaFinNum = parseInt(horaFin.split(':')[0]);
-
-        // Verificar que sea un bloque de exactamente 2 horas
-        if (horaFinNum - horaInicioNum !== 2) {
-            this.showError('Solo se permiten bloques de 2 horas (ej: 8:00-10:00, 14:00-16:00)');
-            this.selectedHorario = null;
-            this.updateNextButton();
-            return;
-        }
-
-        // Verificar que sean horas pares válidas
-        const horariosValidos = [4, 6, 8, 10, 12, 14, 16, 18, 20];
-        if (!horariosValidos.includes(horaInicioNum) || !horariosValidos.includes(horaFinNum)) {
-            this.showError('Horarios no válidos. Use solo horarios pares: 4:00, 6:00, 8:00, 10:00, 12:00, 14:00, 16:00, 18:00, 20:00');
-            this.selectedHorario = null;
-            this.updateNextButton();
-            return;
-        }
-
         // Verificar que la hora de fin sea posterior a la de inicio
         if (horaInicio >= horaFin) {
             this.showError('La hora de fin debe ser posterior a la hora de inicio');
@@ -421,27 +403,7 @@ class SICAUReservationSystem {
         }
     }
 
-    // Convertir horario del formato HH:MM-HH:MM al formato manana/tarde
-    convertirHorario(horario) {
-        if (!horario || !horario.includes('-')) {
-            return null;
-        }
 
-        const [horaInicio, horaFin] = horario.split('-');
-        const horaInicioNum = parseInt(horaInicio.split(':')[0]);
-        const horaFinNum = parseInt(horaFin.split(':')[0]);
-
-        // Mañana: 8:00-12:00
-        if (horaInicioNum >= 8 && horaFinNum <= 12) {
-            return 'manana';
-        }
-        // Tarde: 14:00-18:00
-        else if (horaInicioNum >= 14 && horaFinNum <= 18) {
-            return 'tarde';
-        }
-
-        return null;
-    }
 
     // Confirmar reserva
     async confirmarReserva() {
@@ -453,12 +415,7 @@ class SICAUReservationSystem {
         this.showLoading();
 
         try {
-            const horarioBackend = this.convertirHorario(this.selectedHorario);
-
-            if (!horarioBackend) {
-                this.showError('Horario inválido. Solo se permiten bloques de mañana (8:00-12:00) o tarde (14:00-18:00)');
-                return;
-            }
+            const horarioBackend = this.selectedHorario;
 
             const reservaData = {
                 id: this.reservaEnEdicion ?? null,
@@ -530,23 +487,29 @@ class SICAUReservationSystem {
         }
 
         container.innerHTML = activas.map(reserva => `
-            <div class="reserva-item">
-                <div class="reserva-info">
-                    <span class="reserva-titulo">${reserva.espacio_nombre}</span>
-                    <span class="reserva-estado activa">Activa</span>
+            <div class="reserva-item" style="display: flex; justify-content: space-between; align-items: center;">
+                <div>
+                    <div class="reserva-info">
+                        <span class="reserva-titulo">${reserva.espacio_nombre}</span>
+                        <span class="reserva-estado activa">Activa</span>
+                    </div>
+                    <div class="reserva-detalles">
+                        <strong>Departamento:</strong> ${reserva.departamento_nombre}<br>
+                        <strong>Fecha:</strong> ${this.formatDate(reserva.fecha)}<br>
+                        <strong>Horario:</strong> ${this.getHorarioLabel(reserva.horario)}
+                    </div>
                 </div>
-                <div class="reserva-detalles">
-                    <strong>Departamento:</strong> ${reserva.departamento_nombre}<br>
-                    <strong>Fecha:</strong> ${this.formatDate(reserva.fecha)}<br>
-                    <strong>Horario:</strong> ${this.getHorarioLabel(reserva.horario)}
-                </div>
-                <div class="reserva-acciones">
-                    <button class="btn btn-small btn-warning" onclick="sicau.cargarReservaEnPasos(${reserva.id})">
-                        <i class="fas fa-edit"></i> Editar
-                    </button>
-                    <button class="btn btn-small btn-secondary" onclick="sicau.cancelarReserva(${reserva.id})">
-                        <i class="fas fa-times"></i> Cancelar
-                    </button>
+                <div style="text-align: right; font-size: 0.85rem; color: #666;">
+                    <div><strong>Creación:</strong> ${this.formatDateTime(reserva.created_at)}</div>
+                    <div><strong>Edición:</strong> ${reserva.updated_at ? this.formatDateTime(reserva.updated_at) : 'N/A'}</div>
+                    <div class="reserva-acciones" style="margin-top: 10px;">
+                        <button class="btn btn-small btn-warning" onclick="sicau.cargarReservaEnPasos(${reserva.id})">
+                            <i class="fas fa-edit"></i> Editar
+                        </button>
+                        <button class="btn btn-small btn-secondary" onclick="sicau.cancelarReserva(${reserva.id})">
+                            <i class="fas fa-times"></i> Cancelar
+                        </button>
+                    </div>
                 </div>
             </div>
         `).join('');
@@ -667,7 +630,17 @@ class SICAUReservationSystem {
         const departamento = this.departamentos.find(d => d.codigo === this.selectedDepartamento);
         const departamentoNombre = departamento ? departamento.nombre : this.selectedDepartamento;
 
-        const fechaFormateada = this.formatDate(this.selectedFecha);
+        // Fix date timezone offset issue by creating a Date object and adjusting for timezone
+        let fechaDate = new Date(this.selectedFecha);
+        // Adjust date to local timezone by adding the timezone offset
+        fechaDate = new Date(fechaDate.getTime() + fechaDate.getTimezoneOffset() * 60000);
+        const fechaFormateada = fechaDate.toLocaleDateString('es-ES', {
+            weekday: 'long',
+            year: 'numeric',
+            month: 'long',
+            day: 'numeric'
+        });
+
         const horarioFormateado = this.getHorarioLabel(this.selectedHorario);
 
         resumenContainer.innerHTML = `
@@ -718,6 +691,19 @@ class SICAUReservationSystem {
             year: 'numeric',
             month: 'long',
             day: 'numeric'
+        });
+    }
+
+    // Formatear fecha y hora
+    formatDateTime(dateTimeString) {
+        const date = new Date(dateTimeString);
+        return date.toLocaleString('es-ES', {
+            year: 'numeric',
+            month: 'long',
+            day: 'numeric',
+            hour: '2-digit',
+            minute: '2-digit',
+            second: '2-digit'
         });
     }
 
@@ -914,6 +900,14 @@ class SICAUReservationSystem {
         }
     }
 
+    // Logout function
+    logout() {
+        if (confirm('¿Estás seguro de que deseas cerrar sesión?')) {
+            // Redirect to login page
+            window.location.href = 'login.html';
+        }
+    }
+
     // Cargar horarios disponibles para una fecha
     async loadHorariosDisponibles(fecha) {
         console.log('=== DEBUG loadHorariosDisponibles ===');
@@ -959,11 +953,12 @@ class SICAUReservationSystem {
                 bloqueElement.dataset.horario = bloque.inicio + '-' + bloque.fin;
 
                 const disponible = result.disponible;
+                const mensaje = result.mensaje || (disponible ? 'Disponible' : 'Ocupado');
 
                 bloqueElement.innerHTML = `
                     <div class="horario-tiempo">${bloque.label}</div>
                     <div class="horario-estado ${disponible ? 'disponible' : 'ocupado'}">
-                        ${disponible ? 'Disponible' : 'Ya reservado'}
+                        ${mensaje}
                     </div>
                 `;
 
@@ -1029,34 +1024,6 @@ class SICAUReservationSystem {
         this.updateNextButton();
     }
 }
-
-//redireccionamiento de login a index
-/*form.addEventListener("submit", function (e) {
-  e.preventDefault();
-
-  const datos = {
-    tipo_de_persona: document.getElementById("tipo_de_persona").value,
-    email: document.getElementById("email").value,
-    password: document.getElementById("password").value
-  };
-
-  fetch("ruta/a/login.php", {
-    method: "POST",
-    headers: { "Content-Type": "application/x-www-form-urlencoded" },
-    body: new URLSearchParams(datos)
-  })
-    .then(res => res.json())
-    .then(data => {
-      if (data.status === "success") {
-        window.location.href = "index.html";
-      } else {
-        alert(data.message);
-      }
-    })
-    .catch(() => {
-      alert("Error de conexión.");
-    });
-});*/
 
 
 // Inicializar el sistema cuando se carga la página

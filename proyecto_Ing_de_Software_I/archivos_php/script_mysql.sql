@@ -157,6 +157,19 @@ ON DUPLICATE KEY UPDATE
     telefono = VALUES(telefono),
     contrasena = VALUES(contrasena);
 
+-- Insertar reservas de ejemplo
+INSERT INTO reservas (espacio_id, usuario_id, departamento_codigo, fecha, horario, estado) VALUES
+(1, 1, 'diseno', '2024-12-01', '08:00-10:00', 'activa'),
+(5, 2, 'electrica', '2024-12-02', '14:00-16:00', 'activa'),
+(9, 3, 'mecanica', '2024-12-03', '10:00-12:00', 'activa'),
+(13, 4, 'produccion', '2024-12-04', '16:00-18:00', 'activa'),
+(17, 5, 'sistemas-digitales', '2024-12-05', '08:00-10:00', 'activa'),
+(21, 6, 'deportivos', '2024-12-06', '14:00-16:00', 'activa')
+ON DUPLICATE KEY UPDATE
+    fecha = VALUES(fecha),
+    horario = VALUES(horario),
+    estado = VALUES(estado);
+
 -- Mostrar información de las tablas creadas
 SELECT 'Tablas creadas exitosamente' as mensaje;
 SELECT 'Departamentos' as tabla, COUNT(*) as registros FROM departamentos;
