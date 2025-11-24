@@ -53,9 +53,19 @@ body {
 .header {
     background: var(--azul-marino);
     box-shadow: var(--shadow-md);
-    position: sticky;\n    transition: transform 0.3s ease-in-out;
+    position: sticky;
+    transition: transform 0.3s ease-in-out;
     top: 0;
-    z-index: 1000;\n    transition: transform 0.3s ease-in-out;\n}\n\n.header.hidden {\n    transform: translateY(-100%);\n}\n\n.header.show {\n    transform: translateY(0);
+    z-index: 1000;
+    transition: transform 0.3s ease-in-out;
+}
+
+.header.hidden {
+    transform: translateY(-100%);
+}
+
+.header.show {
+    transform: translateY(0);
 }
 
 .header-content {
